@@ -8,6 +8,8 @@ const { getPool } = require('./db');
 // Importar rutas de módulos
 const authRoutes = require('./modules/auth/auth.routes');
 const usuariosRoutes = require('./modules/usuarios/usuarios.routes');
+const catalogosRoutes = require('./modules/catalogos/catalogos.routes');
+const expedientesRoutes = require('./modules/expedientes/expedientes.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3013;
@@ -22,6 +24,8 @@ console.log(`📄 Swagger disponible en http://localhost:${PORT}/api-docs`);
 // --- RUTAS ---
 app.use('/auth', authRoutes);
 app.use('/usuarios', usuariosRoutes);
+app.use('/catalogos', catalogosRoutes);
+app.use('/expedientes', expedientesRoutes);
 
 app.get('/ping', (req, res) => {
   res.json({ ok: true, message: 'API DICRI viva 🔧' });
