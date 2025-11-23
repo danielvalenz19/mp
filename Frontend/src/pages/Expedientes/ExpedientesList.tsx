@@ -6,7 +6,7 @@ import {
   fetchEstadosExpediente,
   type CatalogoItem,
 } from '../../services/catalogosService';
-import { Search, Filter, Plus, RefreshCw } from 'lucide-react';
+import { Search, Filter, Plus, RefreshCw, Eye, Edit2 } from 'lucide-react';
 
 const ExpedientesList = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -235,12 +235,27 @@ const ExpedientesList = () => {
                           : '--'}
                       </td>
                       <td className="px-4 py-3 text-right">
-                        <Link
-                          to={`/expedientes/${item.id}/editar`}
-                          className="text-primary text-sm hover:underline"
-                        >
-                          Editar
-                        </Link>
+                        <div className="flex items-center justify-end gap-2">
+                          {/* Botón Ver Detalle (Ojo) */}
+                          <Link
+                            to={`/expedientes/${item.id}`}
+                            className="p-2 text-slate-400 hover:text-primary hover:bg-blue-50 rounded-lg transition"
+                            title="Ver Detalle Completo"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </Link>
+
+                          {/* Botón Editar (Lápiz) - Solo si es editable */}
+                          {(item.estado_codigo === 'BORRADOR' || item.estado_codigo === 'RECHAZADO') && (
+                            <Link
+                              to={`/expedientes/${item.id}/editar`}
+                              className="p-2 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition"
+                              title="Editar Cabecera"
+                            >
+                              <Edit2 className="w-4 h-4" />
+                            </Link>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))

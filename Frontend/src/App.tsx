@@ -5,6 +5,7 @@ import MainLayout from './components/layout/MainLayout';
 import Dashboard from './pages/Dashboard/Dashboard';
 import ExpedientesList from './pages/Expedientes/ExpedientesList';
 import ExpedienteForm from './pages/Expedientes/ExpedienteForm';
+import ExpedienteDetail from './pages/Expedientes/ExpedienteDetail';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <Route path="/expedientes" element={<ExpedientesList />} />
             <Route path="/expedientes/nuevo" element={<ExpedienteForm />} />
             <Route path="/expedientes/:id/editar" element={<ExpedienteForm />} />
+            <Route path="/expedientes/:id" element={<ExpedienteDetail />} />
           </Route>
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
