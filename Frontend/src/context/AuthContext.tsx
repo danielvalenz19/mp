@@ -32,17 +32,29 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const navigate = useNavigate();
 
   const persistUser = (userData: User) => {
-    localStorage.setItem('user', JSON.stringify(userData));
-    setUser(userData);
-    setIsAuthenticated(true);
+    if (userData && Object.keys(userData).length > 0) {
+      localStorage.setItem('user', JSON.stringify(userData));
+      setUser(userData);
+      setIsAuthenticated(true);
+    } else {
+      localStorage.removeItem('user');
+      setUser(null);
+      setIsAuthenticated(false);
+    }
   };
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
     if (token && userData) {
-      setUser(JSON.parse(userData));
-      setIsAuthenticated(true);
+      try {
+        const parsed = JSON.parse(userData);
+        persistUser(parsed);
+      } catch {
+        localStorage.removeItem('user');
+        setUser(null);
+        setIsAuthenticated(false);
+      }
     }
   }, []);
 

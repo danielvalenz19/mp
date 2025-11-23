@@ -63,16 +63,21 @@ const Dashboard = () => {
     };
   }, []);
 
-  const getEstadoTotal = (estado: string) => {
-    const entry = estadoData.find(
-      (item) => item.estado.toLowerCase() === estado.toLowerCase(),
-    );
-    return entry?.total ?? 0;
+  const getEstadoTotal = (codigo: string, fallback?: string) => {
+    const entry = estadoData.find((item) => item.codigo_estado === codigo);
+    if (entry) return entry.total;
+    if (fallback) {
+      const alt = estadoData.find(
+        (item) => ((item.estado as string | undefined) ?? '').toLowerCase() === fallback.toLowerCase(),
+      );
+      return alt?.total ?? 0;
+    }
+    return 0;
   };
 
   const totalCasos = estadoData.reduce((acc, item) => acc + item.total, 0);
-  const pendientes = getEstadoTotal('Pendiente') + getEstadoTotal('Pendientes');
-  const rechazados = getEstadoTotal('Rechazado') + getEstadoTotal('Rechazados');
+  const pendientes = getEstadoTotal('EN_REVISION', 'Pendiente') + getEstadoTotal('BORRADOR');
+  const rechazados = getEstadoTotal('RECHAZADO', 'Rechazado');
 
   const cards = [
     {

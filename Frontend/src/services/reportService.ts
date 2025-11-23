@@ -8,20 +8,21 @@ interface ApiResponse<T> {
 
 export interface EstadoResumen {
   estado: string;
+  codigo_estado?: string;
   total: number;
-  [key: string]: string | number;
+  [key: string]: string | number | undefined;
 }
 
 export interface DependenciaResumen {
   dependencia: string;
   total: number;
-  [key: string]: string | number;
+  [key: string]: string | number | undefined;
 }
 
 export interface TecnicoResumen {
   tecnico: string;
   total: number;
-  [key: string]: string | number;
+  [key: string]: string | number | undefined;
 }
 
 const unwrap = <T>(response: ApiResponse<T>): T => {
@@ -32,18 +33,43 @@ const unwrap = <T>(response: ApiResponse<T>): T => {
 };
 
 export const fetchExpedientesPorEstado = async (): Promise<EstadoResumen[]> => {
-  const response = await api.get<ApiResponse<EstadoResumen[]>>('/reportes/expedientes-por-estado');
-  return unwrap(response.data) ?? [];
+  const response = await api.get<ApiResponse<Record<string, unknown>[]>>(
+    '/reportes/expedientes-por-estado',
+  );
+  const data = unwrap(response.data) ?? [];
+  return data.map((item) => ({
+    estado: String((item as { estado?: string; descripcion?: string }).estado ?? (item as { descripcion?: string }).descripcion ?? 'Desconocido'),
+    codigo_estado: (item as { codigo_estado?: string; estado_codigo?: string }).codigo_estado ??
+      (item as { estado_codigo?: string }).estado_codigo ??
+      (item as { estado?: string }).estado,
+    total: Number((item as { total_expedientes?: number; total?: number }).total_expedientes ??
+      (item as { total?: number }).total ??
+      0),
+  }));
 };
 
 export const fetchExpedientesPorDependencia = async (): Promise<DependenciaResumen[]> => {
-  const response = await api.get<ApiResponse<DependenciaResumen[]>>(
+  const response = await api.get<ApiResponse<Record<string, unknown>[]>>(
     '/reportes/expedientes-por-dependencia',
   );
-  return unwrap(response.data) ?? [];
+  const data = unwrap(response.data) ?? [];
+  return data.map((item) => ({
+    dependencia: String((item as { dependencia?: string; nombre?: string }).dependencia ?? (item as { nombre?: string }).nombre ?? 'Sin dependencia'),
+    total: Number((item as { total_expedientes?: number; total?: number }).total_expedientes ??
+      (item as { total?: number }).total ??
+      0),
+  }));
 };
 
 export const fetchExpedientesPorTecnico = async (): Promise<TecnicoResumen[]> => {
-  const response = await api.get<ApiResponse<TecnicoResumen[]>>('/reportes/expedientes-por-tecnico');
-  return unwrap(response.data) ?? [];
+  const response = await api.get<ApiResponse<Record<string, unknown>[]>>(
+    '/reportes/expedientes-por-tecnico',
+  );
+  const data = unwrap(response.data) ?? [];
+  return data.map((item) => ({
+    tecnico: String((item as { tecnico?: string; nombre?: string }).tecnico ?? (item as { nombre?: string }).nombre ?? 'Sin tecnico'),
+    total: Number((item as { total_expedientes?: number; total?: number }).total_expedientes ??
+      (item as { total?: number }).total ??
+      0),
+  }));
 };

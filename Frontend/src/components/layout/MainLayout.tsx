@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { NavLink, Outlet, Navigate, useLocation } from 'react-router-dom';
-import { LayoutDashboard, LogOut, Menu } from 'lucide-react';
+import { LayoutDashboard, LogOut, Menu, Loader2 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { fetchCurrentUser } from '../../services/authService';
 
@@ -11,26 +11,25 @@ const MainLayout = () => {
 
   useEffect(() => {
     let active = true;
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const token = localStorage.getItem('token');
+
     if (token && !user) {
       setLoadingUser(true);
       fetchCurrentUser()
         .then((data) => {
-          if (active) {
-            setUserData(data);
-          }
+          if (active) setUserData(data);
         })
         .catch(() => {
-          if (active) {
-            logout();
-          }
+          if (active) logout();
         })
         .finally(() => {
-          if (active) {
-            setLoadingUser(false);
-          }
+          if (active) setLoadingUser(false);
         });
     }
+    if (!token) {
+      setLoadingUser(false);
+    }
+
     return () => {
       active = false;
     };
@@ -46,6 +45,7 @@ const MainLayout = () => {
   const displayName = (user as { nombre?: string })?.nombre ?? 'Usuario';
   const role =
     (user as { rol?: string })?.rol ??
+    (user as { rol_nombre?: string })?.rol_nombre ??
     (user as { role?: string })?.role ??
     (user as { tipo?: string })?.tipo ??
     'Invitado';
@@ -105,6 +105,7 @@ const MainLayout = () => {
         <main className="flex-1 p-4 md:p-8 overflow-y-auto">
           {loadingUser ? (
             <div className="h-64 flex items-center justify-center text-slate-500">
+              <Loader2 className="w-6 h-6 animate-spin mr-2 text-primary" />
               Cargando perfil...
             </div>
           ) : (
