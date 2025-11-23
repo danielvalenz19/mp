@@ -1,7 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { fetchExpedientes, type Expediente } from '../../services/expedientesService';
-import { fetchDependencias, fetchEstadosExpediente, type CatalogoItem } from '../../services/catalogosService';
+import {
+  fetchDependencias,
+  fetchEstadosExpediente,
+  type CatalogoItem,
+} from '../../services/catalogosService';
 import { Search, Filter, Plus, RefreshCw } from 'lucide-react';
 
 const ExpedientesList = () => {
@@ -67,11 +71,15 @@ const ExpedientesList = () => {
   };
 
   return (
-    <div className="space-y-6">
+    // 👇 esta vista ocupa TODO el alto del <main>
+    <div className="h-full min-h-0 flex flex-col gap-6">
+      {/* Header de la página */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold text-slate-800">Expedientes</h1>
-          <p className="text-slate-500 text-sm">Bandeja de entrada y filtros de casos.</p>
+          <p className="text-slate-500 text-sm">
+            Bandeja de entrada y filtros de casos.
+          </p>
         </div>
         <div className="flex gap-2">
           <button
@@ -92,6 +100,7 @@ const ExpedientesList = () => {
         </div>
       </div>
 
+      {/* Filtros */}
       <div className="bg-white border border-slate-100 rounded-2xl p-4 md:p-6 shadow-sm space-y-4">
         <div className="grid gap-3 md:grid-cols-4">
           <div className="md:col-span-2 relative">
@@ -100,10 +109,11 @@ const ExpedientesList = () => {
               type="text"
               value={filtros.busqueda}
               onChange={(e) => handleFilterChange('busqueda', e.target.value)}
-              placeholder="Buscar por titulo o descripcion"
+              placeholder="Buscar por título o descripción"
               className="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm"
             />
           </div>
+
           <div className="relative">
             <Filter className="w-4 h-4 text-slate-400 absolute left-3 top-3.5" />
             <select
@@ -119,6 +129,7 @@ const ExpedientesList = () => {
               ))}
             </select>
           </div>
+
           <div className="relative">
             <Filter className="w-4 h-4 text-slate-400 absolute left-3 top-3.5" />
             <select
@@ -137,84 +148,106 @@ const ExpedientesList = () => {
         </div>
       </div>
 
-      <div className="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-slate-200">
-            <thead className="bg-slate-50">
-              <tr>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500">Titulo</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500">Estado</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500">
-                  Dependencia
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500">
-                  Creado
-                </th>
-                <th className="px-4 py-3 text-right text-xs font-semibold text-slate-500">
-                  Acciones
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {loading ? (
+      {/* Tabla con SCROLL INTERNO */}
+      <div className="flex-1 min-h-0 bg-white border border-slate-100 rounded-2xl shadow-sm flex flex-col overflow-hidden">
+        {/* Scroll horizontal */}
+        <div className="flex-1 min-h-0 overflow-x-auto">
+          {/* Scroll vertical */}
+          <div className="h-full min-h-0 overflow-y-auto">
+            <table className="min-w-full divide-y divide-slate-200">
+              <thead className="bg-slate-50">
                 <tr>
-                  <td colSpan={5} className="px-4 py-6 text-center text-slate-500 text-sm">
-                    Cargando expedientes...
-                  </td>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500">
+                    Título
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500">
+                    Estado
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500">
+                    Dependencia
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500">
+                    Creado
+                  </th>
+                  <th className="px-4 py-3 text-right text-xs font-semibold text-slate-500">
+                    Acciones
+                  </th>
                 </tr>
-              ) : error ? (
-                <tr>
-                  <td colSpan={5} className="px-4 py-6 text-center text-rose-500 text-sm">
-                    {error}
-                  </td>
-                </tr>
-              ) : expedientes.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="px-4 py-6 text-center text-slate-500 text-sm">
-                    Sin resultados para los filtros seleccionados.
-                  </td>
-                </tr>
-              ) : (
-                expedientes.map((item) => (
-                  <tr key={item.id} className="hover:bg-slate-50">
-                    <td className="px-4 py-3 text-sm text-slate-800">
-                      <div className="font-medium">{item.titulo}</div>
-                      <div className="text-xs text-slate-400">{item.codigo}</div>
-                    </td>
-                    <td className="px-4 py-3 text-sm">
-                      <span
-                        className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                          item.estado_codigo === 'APROBADO'
-                            ? 'bg-emerald-100 text-emerald-700'
-                            : item.estado_codigo === 'RECHAZADO'
-                            ? 'bg-rose-100 text-rose-700'
-                            : item.estado_codigo === 'EN_REVISION'
-                            ? 'bg-amber-100 text-amber-700'
-                            : 'bg-slate-100 text-slate-600'
-                        }`}
-                      >
-                        {item.estado_descripcion}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-sm text-slate-700">
-                      {item.dependencia || 'Sin asignar'}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-slate-500">
-                      {item.fecha_registro ? new Date(item.fecha_registro).toLocaleDateString() : '--'}
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <Link
-                        to={`/expedientes/${item.id}/editar`}
-                        className="text-primary text-sm hover:underline"
-                      >
-                        Editar
-                      </Link>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {loading ? (
+                  <tr>
+                    <td
+                      colSpan={5}
+                      className="px-4 py-6 text-center text-slate-500 text-sm"
+                    >
+                      Cargando expedientes...
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ) : error ? (
+                  <tr>
+                    <td
+                      colSpan={5}
+                      className="px-4 py-6 text-center text-rose-500 text-sm"
+                    >
+                      {error}
+                    </td>
+                  </tr>
+                ) : expedientes.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan={5}
+                      className="px-4 py-6 text-center text-slate-500 text-sm"
+                    >
+                      Sin resultados para los filtros seleccionados.
+                    </td>
+                  </tr>
+                ) : (
+                  expedientes.map((item) => (
+                    <tr key={item.id} className="hover:bg-slate-50">
+                      <td className="px-4 py-3 text-sm text-slate-800">
+                        <div className="font-medium">{item.titulo}</div>
+                        <div className="text-xs text-slate-400">
+                          {item.codigo}
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 text-sm">
+                        <span
+                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                            item.estado_codigo === 'APROBADO'
+                              ? 'bg-emerald-100 text-emerald-700'
+                              : item.estado_codigo === 'RECHAZADO'
+                              ? 'bg-rose-100 text-rose-700'
+                              : item.estado_codigo === 'EN_REVISION'
+                              ? 'bg-amber-100 text-amber-700'
+                              : 'bg-slate-100 text-slate-600'
+                          }`}
+                        >
+                          {item.estado_descripcion}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-sm text-slate-700">
+                        {item.dependencia || 'Sin asignar'}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-slate-500">
+                        {item.fecha_registro
+                          ? new Date(item.fecha_registro).toLocaleDateString()
+                          : '--'}
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <Link
+                          to={`/expedientes/${item.id}/editar`}
+                          className="text-primary text-sm hover:underline"
+                        >
+                          Editar
+                        </Link>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
