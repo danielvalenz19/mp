@@ -25,3 +25,8 @@ export const fetchDependencias = async (): Promise<CatalogoItem[]> => {
   const response = await api.get<ApiResponse<CatalogoItem[]>>('/catalogos/dependencias');
   return unwrap(response.data) ?? [];
 };
+
+export const fetchRoles = async (): Promise<CatalogoItem[]> => {
+  const response = await api.get<ApiResponse<CatalogoItem[]>>('/catalogos/roles');
+  return unwrap(response.data) ?? [];
+};

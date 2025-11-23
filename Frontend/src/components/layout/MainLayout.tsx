@@ -3,6 +3,7 @@ import { NavLink, Outlet, Navigate, useLocation } from 'react-router-dom';
 import { LayoutDashboard, LogOut, Menu, Loader2 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { fetchCurrentUser } from '../../services/authService';
+import Sidebar from './Sidebar';
 
 const MainLayout = () => {
   const { user, isAuthenticated, logout, setUserData } = useAuth();
@@ -54,54 +55,7 @@ const MainLayout = () => {
     // 👇 pantalla completa, sin scroll global
     <div className="h-screen bg-background flex overflow-hidden">
       {/* SIDEBAR */}
-      <aside className="hidden md:flex w-64 bg-sidebar text-white flex-col">
-        <div className="px-6 py-8 text-xl font-semibold tracking-wide border-b border-white/10">
-          SGE DICRI
-        </div>
-
-        {/* navegación ocupa el espacio central */}
-        <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-          <NavLink
-            to="/dashboard"
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition ${
-                isActive
-                  ? 'bg-primary text-white shadow-lg shadow-primary/30'
-                  : 'text-white/70 hover:bg-white/10 hover:text-white'
-              }`
-            }
-          >
-            <LayoutDashboard className="w-5 h-5" />
-            Dashboard
-          </NavLink>
-          <NavLink
-            to="/expedientes"
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition ${
-                isActive
-                  ? 'bg-primary text-white shadow-lg shadow-primary/30'
-                  : 'text-white/70 hover:bg-white/10 hover:text-white'
-              }`
-            }
-          >
-            <LayoutDashboard className="w-5 h-5" />
-            Expedientes
-          </NavLink>
-          {/* aquí tus otros items de menú */}
-        </nav>
-
-        {/* este bloque SIEMPRE queda pegado abajo */}
-        <div className="px-4 py-6 border-t border-white/10">
-          <button
-            type="button"
-            onClick={logout}
-            className="w-full inline-flex items-center justify-center gap-2 bg-primary/10 text-white py-2 rounded-lg text-sm hover:bg-primary/20 transition"
-          >
-            <LogOut className="w-4 h-4" />
-            Cerrar sesión
-          </button>
-        </div>
-      </aside>
+      <Sidebar />
 
       {/* PANEL DERECHO */}
       <div className="flex-1 flex flex-col overflow-hidden">
