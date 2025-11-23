@@ -68,6 +68,17 @@ const MainLayout = () => {
             <LayoutDashboard className="w-5 h-5" />
             Dashboard
           </NavLink>
+          <NavLink
+            to="/expedientes"
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition ${
+                isActive ? 'bg-primary text-white shadow-lg shadow-primary/30' : 'text-white/70 hover:bg-white/10 hover:text-white'
+              }`
+            }
+          >
+            <LayoutDashboard className="w-5 h-5" />
+            Expedientes
+          </NavLink>
         </nav>
         <div className="px-4 py-6 border-t border-white/10">
           <button

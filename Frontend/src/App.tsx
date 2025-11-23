@@ -3,6 +3,8 @@ import { AuthProvider } from './context/AuthContext';
 import Login from './pages/Auth/Login';
 import MainLayout from './components/layout/MainLayout';
 import Dashboard from './pages/Dashboard/Dashboard';
+import ExpedientesList from './pages/Expedientes/ExpedientesList';
+import ExpedienteForm from './pages/Expedientes/ExpedienteForm';
 
 function App() {
   return (
@@ -12,6 +14,9 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route element={<MainLayout />}>
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/expedientes" element={<ExpedientesList />} />
+            <Route path="/expedientes/nuevo" element={<ExpedienteForm />} />
+            <Route path="/expedientes/:id/editar" element={<ExpedienteForm />} />
           </Route>
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
