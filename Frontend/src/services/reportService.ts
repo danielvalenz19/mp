@@ -25,6 +25,19 @@ export interface TecnicoResumen {
   [key: string]: string | number | undefined;
 }
 
+// Filtros opcionales para reportes
+interface ReporteFilters {
+  fechaDesde?: string;
+  fechaHasta?: string;
+}
+
+const getParams = (filters?: ReporteFilters) => {
+  const params = new URLSearchParams();
+  if (filters?.fechaDesde) params.append('fechaDesde', filters.fechaDesde);
+  if (filters?.fechaHasta) params.append('fechaHasta', filters.fechaHasta);
+  return params;
+};
+
 const unwrap = <T>(response: ApiResponse<T>): T => {
   if (response.ok && response.data) {
     return response.data;
@@ -32,9 +45,10 @@ const unwrap = <T>(response: ApiResponse<T>): T => {
   throw new Error(response.message || 'No se pudo obtener la informacion solicitada');
 };
 
-export const fetchExpedientesPorEstado = async (): Promise<EstadoResumen[]> => {
+export const fetchExpedientesPorEstado = async (filters?: ReporteFilters): Promise<EstadoResumen[]> => {
   const response = await api.get<ApiResponse<Record<string, unknown>[]>>(
     '/reportes/expedientes-por-estado',
+    { params: getParams(filters) },
   );
   const data = unwrap(response.data) ?? [];
   return data.map((item) => ({
@@ -48,9 +62,10 @@ export const fetchExpedientesPorEstado = async (): Promise<EstadoResumen[]> => {
   }));
 };
 
-export const fetchExpedientesPorDependencia = async (): Promise<DependenciaResumen[]> => {
+export const fetchExpedientesPorDependencia = async (filters?: ReporteFilters): Promise<DependenciaResumen[]> => {
   const response = await api.get<ApiResponse<Record<string, unknown>[]>>(
     '/reportes/expedientes-por-dependencia',
+    { params: getParams(filters) },
   );
   const data = unwrap(response.data) ?? [];
   return data.map((item) => ({
@@ -61,9 +76,10 @@ export const fetchExpedientesPorDependencia = async (): Promise<DependenciaResum
   }));
 };
 
-export const fetchExpedientesPorTecnico = async (): Promise<TecnicoResumen[]> => {
+export const fetchExpedientesPorTecnico = async (filters?: ReporteFilters): Promise<TecnicoResumen[]> => {
   const response = await api.get<ApiResponse<Record<string, unknown>[]>>(
     '/reportes/expedientes-por-tecnico',
+    { params: getParams(filters) },
   );
   const data = unwrap(response.data) ?? [];
   return data.map((item) => ({

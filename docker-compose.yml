@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  # 1. BASE DE DATOS (Sin volumen persistente para evitar errores de permisos en Windows)
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: dicri_db
+    environment:
+      - ACCEPT_EULA=Y
+      # OJO: Contraseña fuerte obligatoria. Si pones '12345678' el contenedor se apaga.
+      - MSSQL_SA_PASSWORD=Dicri@12345678
+    ports:
+      - "1433:1433"
+    networks:
+      - dicri-network
+
+  # 2. BACKEND (API)
+  api:
+    build: ./dicri-backend
+    container_name: dicri_api
+    ports:
+      - "3013:3013"
+    environment:
+      - PORT=3013
+      - DB_USER=sa
+      # Aquí le decimos al backend cuál es la contraseña correcta
+      - DB_PASSWORD=Dicri@12345678
+      - DB_SERVER=db
+      - DB_NAME=DicriEvidenciasDB
+      - JWT_SECRET=SemillaSuperSecretaDicri2025!
+    depends_on:
+      - db
+    networks:
+      - dicri-network
+
+  # 3. FRONTEND
+  frontend:
+    build: ./Frontend
+    container_name: dicri_frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+    networks:
+      - dicri-network
+
+networks:
+  dicri-network:
+    driver: bridge
