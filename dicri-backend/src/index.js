@@ -1,44 +1,12 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const swaggerUi = require('swagger-ui-express'); // Importar UI
-const swaggerSpec = require('./config/swagger'); // Importar config
+// src/index.js
+const app = require('./app'); // Importamos la configuración
 const { getPool } = require('./db');
 
-// Importar rutas de módulos
-const authRoutes = require('./modules/auth/auth.routes');
-const usuariosRoutes = require('./modules/usuarios/usuarios.routes');
-const catalogosRoutes = require('./modules/catalogos/catalogos.routes');
-const expedientesRoutes = require('./modules/expedientes/expedientes.routes');
-const indiciosRoutes = require('./modules/indicios/indicios.routes');
-const historialRoutes = require('./modules/historial/historial.routes');
-const reportesRoutes = require('./modules/reportes/reportes.routes');
-
-const app = express();
 const PORT = process.env.PORT || 3013;
-
-app.use(cors());
-app.use(express.json());
-
-// --- DOCUMENTACIÓN SWAGGER ---
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-console.log(`📄 Swagger disponible en http://localhost:${PORT}/api-docs`);
-
-// --- RUTAS ---
-app.use('/auth', authRoutes);
-app.use('/usuarios', usuariosRoutes);
-app.use('/catalogos', catalogosRoutes);
-app.use('/expedientes', expedientesRoutes);
-app.use('/', indiciosRoutes);
-app.use('/historial', historialRoutes);
-app.use('/reportes', reportesRoutes);
-
-app.get('/ping', (req, res) => {
-  res.json({ ok: true, message: 'API DICRI viva 🔧' });
-});
 
 app.listen(PORT, async () => {
   console.log(`API escuchando en puerto ${PORT}`);
+  console.log(`📄 Swagger disponible en http://localhost:${PORT}/api-docs`);
   try {
     await getPool();
     console.log(`✅ Conectado a SQL Server (${process.env.DB_NAME})`);
