@@ -34,7 +34,10 @@ const ExpedienteDetail = () => {
 
   const isEditable = expediente.estado_codigo === 'BORRADOR' || expediente.estado_codigo === 'RECHAZADO';
   const isRevision = expediente.estado_codigo === 'EN_REVISION';
-  const isCoordinador = user?.rol === 'COORDINADOR' || user?.rol === 'ADMIN';
+  
+  // 🔴 CORRECCIÓN CRÍTICA: Validar rol o rol_nombre
+  const currentRole = (user as any)?.rol || (user as any)?.rol_nombre;
+  const isCoordinador = currentRole === 'COORDINADOR' || currentRole === 'ADMIN';
 
   // --- ACCIONES DE FLUJO ---
 
@@ -106,12 +109,13 @@ const ExpedienteDetail = () => {
             </button>
           )}
           
+          {/* Botones para el Coordinador (SOLO si está en revisión) */}
           {isRevision && isCoordinador && (
             <>
-              <button onClick={handleRechazar} className="bg-white border border-rose-200 text-rose-600 hover:bg-rose-50 px-4 py-2 rounded-lg flex items-center gap-2">
+              <button onClick={handleRechazar} className="bg-white border border-rose-200 text-rose-600 hover:bg-rose-50 px-4 py-2 rounded-lg flex items-center gap-2 font-medium">
                 <XCircle className="w-4 h-4" /> Rechazar
               </button>
-              <button onClick={handleAprobar} className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg flex items-center gap-2">
+              <button onClick={handleAprobar} className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium shadow-lg shadow-emerald-500/20">
                 <CheckCircle className="w-4 h-4" /> Aprobar
               </button>
             </>

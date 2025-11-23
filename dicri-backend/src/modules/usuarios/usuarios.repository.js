@@ -22,7 +22,7 @@ const obtenerPorId = async (id) => {
 const crear = async (usuario) => {
   const pool = await getPool();
   const result = await pool.request()
-    .input('NombreCompleto', usuario.nombre)
+    .input('NombreCompleto', usuario.nombre)    
     .input('Correo', usuario.correo)
     .input('HashPassword', usuario.hashPassword)
     .input('IdRol', usuario.idRol)
