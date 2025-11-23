@@ -176,20 +176,35 @@ const ExpedientesList = () => {
                 </tr>
               ) : (
                 expedientes.map((item) => (
-                  <tr key={item.id_expediente} className="hover:bg-slate-50">
-                    <td className="px-4 py-3 text-sm text-slate-800">{item.titulo}</td>
+                  <tr key={item.id} className="hover:bg-slate-50">
+                    <td className="px-4 py-3 text-sm text-slate-800">
+                      <div className="font-medium">{item.titulo}</div>
+                      <div className="text-xs text-slate-400">{item.codigo}</div>
+                    </td>
                     <td className="px-4 py-3 text-sm">
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
-                        {item.estado}
+                      <span
+                        className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                          item.estado_codigo === 'APROBADO'
+                            ? 'bg-emerald-100 text-emerald-700'
+                            : item.estado_codigo === 'RECHAZADO'
+                            ? 'bg-rose-100 text-rose-700'
+                            : item.estado_codigo === 'EN_REVISION'
+                            ? 'bg-amber-100 text-amber-700'
+                            : 'bg-slate-100 text-slate-600'
+                        }`}
+                      >
+                        {item.estado_descripcion}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-sm text-slate-700">{item.dependencia}</td>
+                    <td className="px-4 py-3 text-sm text-slate-700">
+                      {item.dependencia || 'Sin asignar'}
+                    </td>
                     <td className="px-4 py-3 text-sm text-slate-500">
-                      {item.creado_en ? new Date(item.creado_en).toLocaleDateString() : '--'}
+                      {item.fecha_registro ? new Date(item.fecha_registro).toLocaleDateString() : '--'}
                     </td>
                     <td className="px-4 py-3 text-right">
                       <Link
-                        to={`/expedientes/${item.id_expediente}/editar`}
+                        to={`/expedientes/${item.id}/editar`}
                         className="text-primary text-sm hover:underline"
                       >
                         Editar

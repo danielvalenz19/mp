@@ -6,6 +6,7 @@ import {
   createExpediente,
   fetchExpedientes,
   updateExpediente,
+  fetchExpedienteById,
 } from '../../services/expedientesService';
 
 const ExpedienteForm = () => {
@@ -33,8 +34,8 @@ const ExpedienteForm = () => {
   const loadExpediente = async (expedienteId: number) => {
     setLoading(true);
     try {
-      const data = await fetchExpedientes();
-      const found = data.find((x) => x.id_expediente === expedienteId);
+      const found = await fetchExpedienteById(expedienteId);
+
       if (found) {
         setForm({
           titulo: found.titulo,
@@ -43,9 +44,12 @@ const ExpedienteForm = () => {
         });
       } else {
         Swal.fire('Atencion', 'No se encontro el expediente', 'warning');
+        navigate('/expedientes');
       }
     } catch (err) {
+      console.error(err);
       Swal.fire('Error', 'No se pudo cargar el expediente', 'error');
+      navigate('/expedientes');
     } finally {
       setLoading(false);
     }
