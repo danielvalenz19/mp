@@ -7,6 +7,7 @@ import ExpedientesList from './pages/Expedientes/ExpedientesList';
 import ExpedienteForm from './pages/Expedientes/ExpedienteForm';
 import ExpedienteDetail from './pages/Expedientes/ExpedienteDetail';
 import UsuariosList from './pages/Usuarios/UsuariosList';
+import ReportesView from './pages/Reportes/ReportesView';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             <Route path="/expedientes/:id/editar" element={<ExpedienteForm />} />
             <Route path="/expedientes/:id" element={<ExpedienteDetail />} />
             <Route path="/usuarios" element={<UsuariosList />} />
+            <Route path="/reportes" element={<ReportesView />} />
           </Route>
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>

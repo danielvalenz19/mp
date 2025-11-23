@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, FolderOpen, Users, LogOut } from 'lucide-react';
+import { LayoutDashboard, FolderOpen, Users, LogOut, FileBarChart } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 const Sidebar = () => {
@@ -27,6 +27,12 @@ const Sidebar = () => {
       name: 'Usuarios', 
       to: '/usuarios', 
       icon: Users, 
+      roles: ['ADMIN', 'COORDINADOR'] 
+    },
+    { 
+      name: 'Reportes', 
+      to: '/reportes', 
+      icon: FileBarChart, 
       roles: ['ADMIN', 'COORDINADOR'] 
     },
   ];
